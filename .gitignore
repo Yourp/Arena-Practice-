@@ -1,0 +1,21 @@
+# Add any directories, files, or patterns you don't want to be tracked by version control
+*.gitignore
+*.sdf
+*.suo
+/First.sln
+/First.VC.db
+/First.VC.VC.opendb
+
+Binaries/
+
+Build/
+
+Intermediate/
+
+Saved/
+
+DerivedDataCache/
+
+Выполните git init
+
+git add –A
