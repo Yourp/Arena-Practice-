@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "MyCharacter.h"
+#include "Components/InputComponent.h"
 
 
 // Sets default values
@@ -10,6 +11,9 @@ AMyCharacter::AMyCharacter()
 	PrimaryActorTick.bCanEverTick = false;
 
     UCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
+
+    UCamera->SetupAttachment(RootComponent);
+    UCamera->bUsePawnControlRotation = true;
 }
 
 // Called when the game starts or when spawned
@@ -31,5 +35,7 @@ void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+//     InputComponent->BindAxis()
+//     InputComponent->BindTouch(IE_Repeat, this, &AMyCharacter::OnTouchMove);
 }
 
