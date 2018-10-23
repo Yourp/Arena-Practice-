@@ -5,6 +5,8 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "Camera/CameraComponent.h"
+#include "GameFramework/Pawn.h"
+#include "Components/InputComponent.h"
 #include "MyCharacter.generated.h"
 
 UCLASS()
@@ -29,6 +31,9 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+    void MoveForward(float Value);
+    void MoveRight(float Value);
 
 	
 	
