@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/Pawn.h"
 #include "Components/InputComponent.h"
@@ -22,8 +23,8 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite)
-    UCameraComponent* UCamera;
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+    UCameraComponent* CharCamera;
 
 public:	
 	// Called every frame
@@ -34,7 +35,4 @@ public:
 
     void MoveForward(float Value);
     void MoveRight(float Value);
-
-	
-	
 };

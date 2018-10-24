@@ -9,10 +9,10 @@ AMyCharacter::AMyCharacter()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
 
-    UCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
+    CharCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
+    CharCamera->SetupAttachment(RootComponent);
 
-    UCamera->SetupAttachment(RootComponent);
-    UCamera->bUsePawnControlRotation = true;
+    CharCamera->bUsePawnControlRotation = true;
 }
 
 // Called when the game starts or when spawned
