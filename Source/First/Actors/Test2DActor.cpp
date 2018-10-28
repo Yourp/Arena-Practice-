@@ -6,7 +6,6 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/GameplayStatics.h"
 
-
 // Sets default values
 ATest2DActor::ATest2DActor()
 {
@@ -20,8 +19,6 @@ ATest2DActor::ATest2DActor()
 void ATest2DActor::BeginPlay()
 {
 	Super::BeginPlay();
-	
-    PrimaryActorTick.TickInterval = 0.0f;
 }
 
 // Called every frame
