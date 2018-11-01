@@ -40,12 +40,12 @@ void ATimelineTest::OnTimelineFinished()
 {
     if (MyTimeLine->GetPlaybackPosition() == 0.f)
     {
-        GLog->Log("PLAY");
+        //GLog->Log("PLAY");
         MyTimeLine->Play();
     }
     else if (MyTimeLine->GetPlaybackPosition() == MyTimeLine->GetTimelineLength())
     {
-        GLog->Log("REVERSE");
+        //GLog->Log("REVERSE");
         MyTimeLine->Reverse();
     }
 }
