@@ -35,9 +35,15 @@ void ASplineTest::Tick(float DeltaTime)
 
     if (fCurve)
     {
+        float MaxTime = fCurve->FloatCurve.GetLastKey().Time;
+
         timer += DeltaTime;
+
+        if (MaxTime < timer)
+            timer -= MaxTime;
+
         float getDistance = SplineComp->GetSplineLength() * fCurve->GetFloatValue(timer);
-        
+
         BoxComp->SetWorldTransform(FTransform(BoxComp->GetComponentRotation(), SplineComp->GetLocationAtDistanceAlongSpline(getDistance, ESplineCoordinateSpace::World), BoxComp->GetComponentScale()));
     }
 }
