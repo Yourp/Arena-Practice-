@@ -8,7 +8,7 @@ ATest2DActor::ATest2DActor()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-    
+    PrimaryActorTick.TickInterval = 0.05f;
     Text = CreateDefaultSubobject<UTextRenderComponent>(TEXT("FacingText"));
 }
 
@@ -25,7 +25,7 @@ void ATest2DActor::Tick(float DeltaTime)
     {
 	    Super::Tick(DeltaTime);
 
-        PrimaryActorTick.TickInterval = 0.f;
+        PrimaryActorTick.TickInterval = DeltaTime - 0.004f;
 
         if (APlayerCameraManager* CameraMgr = UGameplayStatics::GetPlayerCameraManager(this, 0))
         {
