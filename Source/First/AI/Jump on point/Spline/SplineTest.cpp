@@ -11,9 +11,11 @@ ASplineTest::ASplineTest()
 
     SceneComp = CreateDefaultSubobject<USceneComponent>(TEXT("SceneComponent"));
     SetRootComponent(SceneComp);
+    SceneComp->bHiddenInGame = true;
 
     SplineComp = CreateDefaultSubobject<USplineComponent>(TEXT("SplineComponent"));
     SplineComp->SetupAttachment(SceneComp);
+    SplineComp->bHiddenInGame = true;
 
     BoxComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("CubeComponent"));
     BoxComp->SetupAttachment(SceneComp);
@@ -25,7 +27,6 @@ ASplineTest::ASplineTest()
 void ASplineTest::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
 
 // Called every frame
@@ -35,16 +36,20 @@ void ASplineTest::Tick(float DeltaTime)
 
     if (fCurve)
     {
-        float MaxTime = fCurve->FloatCurve.GetLastKey().Time;
-
         timer += DeltaTime;
 
+        float MaxTime = fCurve->FloatCurve.GetLastKey().Time;
         if (MaxTime < timer)
-            timer -= MaxTime;
+        {
+            timer -= (MaxTime + 5.f);
+        }
 
-        float getDistance = SplineComp->GetSplineLength() * fCurve->GetFloatValue(timer);
+        if (timer >= 0.f)
+        {
+            float getDistance = SplineComp->GetSplineLength() * fCurve->GetFloatValue(timer);
 
-        BoxComp->SetWorldTransform(FTransform(BoxComp->GetComponentRotation(), SplineComp->GetLocationAtDistanceAlongSpline(getDistance, ESplineCoordinateSpace::World), BoxComp->GetComponentScale()));
+            BoxComp->SetWorldTransform(FTransform(BoxComp->GetComponentRotation(), SplineComp->GetLocationAtDistanceAlongSpline(getDistance, ESplineCoordinateSpace::World), BoxComp->GetComponentScale()));
+        }
     }
 }
 
