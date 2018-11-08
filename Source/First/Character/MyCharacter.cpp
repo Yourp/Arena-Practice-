@@ -2,25 +2,51 @@
 
 #include "MyCharacter.h"
 #include "GameFramework/PawnMovementComponent.h"
+#include "Kismet/KismetMathLibrary.h"
 
 // Sets default values
 AMyCharacter::AMyCharacter()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = false;
+	PrimaryActorTick.bCanEverTick = true;
 
     CharCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
     CharCamera->SetupAttachment(RootComponent);
 
     CharCamera->bUsePawnControlRotation = true;
+    LandTarget = nullptr;
 }
 
 // Called when the game starts or when spawned
 void AMyCharacter::BeginPlay()
 {
+    //FVector(800.f, 80.f, 600.f)
 	Super::BeginPlay();
 //     UPawnMovementComponent* dasd = GetMovementComponent();
-//     dasd->Velocity += FVector(0.f, 0.f, 2000.f);
+//     dasd->Velocity += FVector(800.f, 80.f, 1800.f) - GetActorLocation();
+
+    //FRotator NewRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), FVector(800.f, 80.f, 600.f));
+
+//     UPawnMovementComponent* dasd = GetMovementComponent();
+//     FVector point = FVector(800.f, 80.f, 600.f);
+//     FVector actorLoc = GetActorLocation();
+// 
+//     //float dist = FVector::Distance(point, actorLoc);
+//     //         magnet.X /= 40;
+//     //         magnet.Y /= 40;
+//     //         magnet.Z /= 15;
+//     //point.Z /= 5;
+// 
+// 
+//     dasd->Velocity = FVector(1000.f, 1000.f, 1000);
+    //PrimaryActorTick.TickInterval = 1.f;
+}
+
+void AMyCharacter::Landed(const FHitResult & Hit)
+{
+    Super::Landed(Hit);
+    UE_LOG(LogTemp, Warning, TEXT("Timer: %f"), timer);
+    LandTarget = nullptr;
 }
 
 // Called every frame
@@ -28,6 +54,131 @@ void AMyCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+    FVector vel = GetCharacterMovement()->Velocity;
+    timer += DeltaTime;
+    if (LandTarget)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("Dist: %f"), FVector::Distance(GetActorLocation(), LandTarget->GetActorLocation()));
+    }
+// 
+//     if (LandTarget != nullptr)
+//     {
+//         timer += DeltaTime;
+//         FVector point = LandTarget->GetActorLocation();
+//         FVector actorLoc = GetActorLocation();
+//         float curDist = FVector::Dist2D(point, actorLoc);
+//         
+//         UE_LOG(LogTemp, Warning, TEXT("timer: %f"), timer);
+//         if (curDist > maxDist2D)
+//         {
+//             UE_LOG(LogTemp, Warning, TEXT("timer: %f"), timer);
+//             LandTarget = nullptr;
+//             return;
+//         }
+//         maxDist2D = curDist;
+// //         if (FVector::Distance(point, actorLoc) < 1100.f)
+// //         {
+// //             LandTarget = nullptr;
+// //             UE_LOG(LogTemp, Warning, TEXT("Sync OFF"));
+// //         }
+// //         float DistPct = 1.f - (curDist / maxDist2D);
+// //         float curZMastBe = 0;
+// // 
+// //         FVector vel = GetCharacterMovement()->Velocity;
+// // 
+// //         if (DistPct < 0.5f)
+// //         {
+// //             DistPct *= 2.f;
+// //             curZMastBe = ((maxJumpZ - startZ) * DistPct) + startZ;
+// //         }
+// //         else
+// //         {
+// //             DistPct -= 0.5f;
+// //             DistPct *= 2.f;
+// //             curZMastBe = ((point.Z - maxJumpZ) * DistPct) + maxJumpZ;
+// //         }
+// //         float finalZ = curZMastBe - actorLoc.Z;
+// // 
+// //         GetCharacterMovement()->Velocity.Z += finalZ;
+// // 
+// // //         FVector vel = GetCharacterMovement()->Velocity;
+// // // 
+// // // //         if (FVector::Distance(point, actorLoc) < 500.f)
+// // // //         {
+// // // //             LandTarget = nullptr;
+// // // //             UE_LOG(LogTemp, Warning, TEXT("Sync OFF"));
+// // // //         }
+// // // 
+// // //         FVector realVect = point - actorLoc;
+// // //         FVector diff = vel - realVect;
+// // // 
+// // //         float modXY = 0.03f;
+// // //         diff.X *= modXY;
+// // //         diff.Y *= modXY;
+// // // // 
+// // // //         if (realVect.Z >= 0.f)
+// // // //         {
+// // // //             diff.Z *= 0.0001f;
+// // // //         }
+// // // //         else
+// // // //             diff.Z = 0.f;
+// // // //         
+// // // //         GetCharacterMovement()->Velocity -= diff;
+// // //         GetCharacterMovement()->Velocity.X -= diff.X;
+// // //         GetCharacterMovement()->Velocity.Y -= diff.Y;
+//     }
+}
+
+void AMyCharacter::SmartJump()
+{
+    GetCharacterMovement()->SetMovementMode(MOVE_Falling);
+
+    TArray<AActor*> targets;
+    UGameplayStatics::GetAllActorsWithTag(this, FName("111"), targets);
+
+    for (auto itr : targets)
+    {
+        LandTarget = itr;
+        FVector point = LandTarget->GetActorLocation();
+        FVector actorLoc = GetActorLocation();
+        float bonusHeight = 800.f/* + FVector::Dist2D(point, actorLoc) / 3.f*/;
+        float landSpeed = 980.f;
+        float time = 1.f;
+        float startSpeedZ = 0.f;
+
+        if (point.Z >= actorLoc.Z)
+        {
+            float height = point.Z + bonusHeight - actorLoc.Z;
+            startSpeedZ = FMath::Sqrt(2.f * landSpeed * height);
+            time = startSpeedZ / landSpeed + FMath::Sqrt((2.f * bonusHeight) / landSpeed);
+        }
+        else
+        {
+            startSpeedZ = FMath::Sqrt(2.f * landSpeed * bonusHeight);
+            time = startSpeedZ / landSpeed;
+            float landSpeedCap = 4000.000244f;
+            float distBeforeCap = ((landSpeedCap / landSpeed) * landSpeedCap) / 2.f;
+            float height = actorLoc.Z + bonusHeight - point.Z;
+
+            if (height > distBeforeCap)
+            {
+                height -= distBeforeCap;
+                time += landSpeedCap / landSpeed;
+                time += height / landSpeedCap;
+            }
+            else
+            {
+                time += FMath::Sqrt(2.f * height / landSpeed);
+            }
+        }
+
+        point.X = (point.X - actorLoc.X) / time;
+        point.Y = (point.Y - actorLoc.Y) / time;
+        //GetCharacterMovement()->Velocity = FVector(0, 0, 1000);
+        GetCharacterMovement()->Velocity = FVector(point.X, point.Y, startSpeedZ);
+        timer = 0.f;
+        return;
+    }
 }
 
 // Called to bind functionality to input
@@ -43,6 +194,8 @@ void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 
     PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &AMyCharacter::Jump);
     PlayerInputComponent->BindAction("Jump", IE_Released, this, &AMyCharacter::StopJumping);
+
+    PlayerInputComponent->BindAction("SmartJump", IE_Pressed, this, &AMyCharacter::SmartJump);
 }
 
 void AMyCharacter::MoveForward(float Value)
@@ -72,6 +225,40 @@ void AMyCharacter::MoveRight(float Value)
         AddMovementInput(GetActorRightVector(), Value);
     }
 }
+
+// void AMyCharacter::SmartJump()
+// {
+//     if (fCurveZ)
+//     {
+//         //FVector point = FVector(950.f, 8980.f, 50240.f);
+// 
+//         GetCharacterMovement()->SetMovementMode(MOVE_Falling);
+// 
+//         TArray<AActor*> targets;
+//         UGameplayStatics::GetAllActorsWithTag(this, FName("111"), targets);
+// 
+//         for (auto itr : targets)
+//         {
+//             FVector point = itr->GetActorLocation();
+//             FVector actorLoc = GetActorLocation();
+// 
+//             point -= actorLoc;
+//             point.X /= 2;
+//             point.Y /= 2;
+// 
+//             if (point.Z < 0.f)
+//                 point.Z = 0.f;
+// 
+//             UE_LOG(LogTemp, Warning, TEXT("Z: %f"), point.Z);
+//             point.Z /= fCurveZ->GetFloatValue(point.Z);
+// 
+//             point.Z += 800.f;
+// 
+//             GetCharacterMovement()->Velocity = FVector(point.X, point.Y, point.Z);
+//             return;
+//         }
+//     }
+// }
 
 // AMyProjectCharacter::AMyProjectCharacter()
 // {

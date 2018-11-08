@@ -4,10 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
-#include "GameFramework/SpringArmComponent.h"
+#include "Components/SkeletalMeshComponent.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/Pawn.h"
 #include "Components/InputComponent.h"
+#include "Curves/CurveFloat.h"
+#include "GameFramework/CharacterMovementComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "MyCharacter.generated.h"
 
 UCLASS()
@@ -23,8 +26,18 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+    virtual void Landed(const FHitResult& Hit) override;
+
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
     UCameraComponent* CharCamera;
+
+    AActor* LandTarget;
+
+    float maxDist2D;
+    float maxJumpZ;
+    float startZ;
+
+    float timer;
 
 public:	
 	// Called every frame
@@ -35,4 +48,11 @@ public:
 
     void MoveForward(float Value);
     void MoveRight(float Value);
+    void SmartJump();
+
+    UPROPERTY(EditAnywhere, Category = "Curves")
+    UCurveFloat* fCurveXY;
+
+    UPROPERTY(EditAnywhere, Category = "Curves")
+    UCurveFloat* fCurveZ;
 };
