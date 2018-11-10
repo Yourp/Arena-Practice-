@@ -14,7 +14,6 @@ AMyCharacter::AMyCharacter()
     CharCamera->SetupAttachment(RootComponent);
 
     CharCamera->bUsePawnControlRotation = true;
-    LandTarget = nullptr;
 }
 
 // Called when the game starts or when spawned
@@ -45,21 +44,13 @@ void AMyCharacter::BeginPlay()
 void AMyCharacter::Landed(const FHitResult & Hit)
 {
     Super::Landed(Hit);
-    UE_LOG(LogTemp, Warning, TEXT("Timer: %f"), timer);
-    LandTarget = nullptr;
+    //UE_LOG(LogTemp, Warning, TEXT("Timer: %f"), timer);
 }
 
 // Called every frame
 void AMyCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-    FVector vel = GetCharacterMovement()->Velocity;
-    timer += DeltaTime;
-    if (LandTarget)
-    {
-        UE_LOG(LogTemp, Warning, TEXT("Dist: %f"), FVector::Distance(GetActorLocation(), LandTarget->GetActorLocation()));
-    }
 // 
 //     if (LandTarget != nullptr)
 //     {
@@ -136,19 +127,35 @@ void AMyCharacter::SmartJump()
     TArray<AActor*> targets;
     UGameplayStatics::GetAllActorsWithTag(this, FName("111"), targets);
 
+    FVector FillTarget;
+    float MaxFill = -2.f;
+    FVector Dir = CharCamera->GetForwardVector();
+
     for (auto itr : targets)
     {
-        LandTarget = itr;
-        FVector point = LandTarget->GetActorLocation();
+        FVector const& targetLoc = itr->GetActorLocation();
+        FVector Offset = targetLoc - CharCamera->GetComponentLocation();
+        Offset = Offset.GetSafeNormal();
+        float curAngle = FVector::DotProduct(Dir, Offset);
+
+        if (curAngle > MaxFill)
+        {
+            MaxFill = curAngle;
+            FillTarget = targetLoc;
+        }
+    }
+
+    if (!FillTarget.IsZero())
+    {
         FVector actorLoc = GetActorLocation();
         float bonusHeight = 800.f/* + FVector::Dist2D(point, actorLoc) / 3.f*/;
         float landSpeed = 980.f;
         float time = 1.f;
         float startSpeedZ = 0.f;
 
-        if (point.Z >= actorLoc.Z)
+        if (FillTarget.Z >= actorLoc.Z)
         {
-            float height = point.Z + bonusHeight - actorLoc.Z;
+            float height = FillTarget.Z + bonusHeight - actorLoc.Z;
             startSpeedZ = FMath::Sqrt(2.f * landSpeed * height);
             time = startSpeedZ / landSpeed + FMath::Sqrt((2.f * bonusHeight) / landSpeed);
         }
@@ -158,7 +165,7 @@ void AMyCharacter::SmartJump()
             time = startSpeedZ / landSpeed;
             float landSpeedCap = 4000.000244f;
             float distBeforeCap = ((landSpeedCap / landSpeed) * landSpeedCap) / 2.f;
-            float height = actorLoc.Z + bonusHeight - point.Z;
+            float height = actorLoc.Z + bonusHeight - FillTarget.Z;
 
             if (height > distBeforeCap)
             {
@@ -172,12 +179,10 @@ void AMyCharacter::SmartJump()
             }
         }
 
-        point.X = (point.X - actorLoc.X) / time;
-        point.Y = (point.Y - actorLoc.Y) / time;
+        FillTarget.X = (FillTarget.X - actorLoc.X) / time;
+        FillTarget.Y = (FillTarget.Y - actorLoc.Y) / time;
         //GetCharacterMovement()->Velocity = FVector(0, 0, 1000);
-        GetCharacterMovement()->Velocity = FVector(point.X, point.Y, startSpeedZ);
-        timer = 0.f;
-        return;
+        GetCharacterMovement()->Velocity = FVector(FillTarget.X, FillTarget.Y, startSpeedZ);
     }
 }
 

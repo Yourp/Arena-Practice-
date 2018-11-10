@@ -31,14 +31,6 @@ protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
     UCameraComponent* CharCamera;
 
-    AActor* LandTarget;
-
-    float maxDist2D;
-    float maxJumpZ;
-    float startZ;
-
-    float timer;
-
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
