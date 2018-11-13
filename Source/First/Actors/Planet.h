@@ -6,7 +6,8 @@
 #include "Engine/StaticMeshActor.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
-#include "Character/MyCharacter.h"
+#include "Character/PawnForPlanet.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "Planet.generated.h"
 
 /**

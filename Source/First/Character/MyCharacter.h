@@ -11,6 +11,8 @@
 #include "Curves/CurveFloat.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "DrawDebugHelpers.h"
+#include "Components/CapsuleComponent.h"
 #include "MyCharacter.generated.h"
 
 UCLASS()
