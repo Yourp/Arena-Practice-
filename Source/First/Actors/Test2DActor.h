@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/TextRenderComponent.h"
+#include "Camera/PlayerCameraManager.h"
 #include "Test2DActor.generated.h"
 
 UCLASS()
@@ -15,12 +16,15 @@ public:
 	// Sets default values for this actor's properties
 	ATest2DActor();
 
+    APlayerCameraManager* CameraMgr;
+
 protected:
 	// Called when the game starts or when spawned
-	//virtual void BeginPlay() override;
 
 public:	
-	// Called every frame
+
+    virtual void BeginPlay() override;
+    // Called every frame
 	virtual void Tick(float DeltaTime) override;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly)

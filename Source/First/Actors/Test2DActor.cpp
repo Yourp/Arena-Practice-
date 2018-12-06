@@ -13,21 +13,23 @@ ATest2DActor::ATest2DActor()
 }
 
 // Called when the game starts or when spawned
-// void ATest2DActor::BeginPlay()
-// {
-// 	Super::BeginPlay();
-// }
+void ATest2DActor::BeginPlay()
+{
+	Super::BeginPlay();
+
+    CameraMgr = UGameplayStatics::GetPlayerCameraManager(this, 0);
+}
 
 // Called every frame
 void ATest2DActor::Tick(float DeltaTime)
 {
     if (WasRecentlyRendered())
     {
-	    Super::Tick(DeltaTime);
+	    //Super::Tick(DeltaTime);
 
         PrimaryActorTick.TickInterval = DeltaTime - 0.004f;
 
-        if (APlayerCameraManager* CameraMgr = UGameplayStatics::GetPlayerCameraManager(this, 0))
+        if (CameraMgr != nullptr)
         {
             FRotator NewRotation = CameraMgr->GetCameraRotation();
             NewRotation.Yaw += 180.f;
