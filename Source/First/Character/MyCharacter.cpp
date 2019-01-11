@@ -26,12 +26,36 @@ void AMyCharacter::Landed(const FHitResult & Hit)
 {
     Super::Landed(Hit);
     //UE_LOG(LogTemp, Warning, TEXT("Timer: %f"), timer);
+    float speed = -(GetCharacterMovement()->Velocity.Z);
+
+    if (speed > JumpHight && bHealthDriver.CurHealth)
+    {
+        SetDamage((speed - JumpHight) / FallSpeed);
+    }
 }
 
 // Called every frame
 void AMyCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+    if (bHealthDriver.Timer == 0.f)
+    {
+        if (bHealthDriver.CurHealth < bHealthDriver.CurHealthDropEffect)
+        {
+            bHealthDriver.CurHealthDropEffect -= DeltaTime;
+
+            if (bHealthDriver.CurHealth > bHealthDriver.CurHealthDropEffect)
+                bHealthDriver.CurHealthDropEffect = bHealthDriver.CurHealth;
+        }
+    }
+    else if (bHealthDriver.Timer > 0.f)
+    {
+        bHealthDriver.Timer -= DeltaTime;
+
+        if (bHealthDriver.Timer < 0.f)
+            bHealthDriver.Timer = 0.f;
+    }
 
     //DrawDebugCapsule(GetWorld(), GetActorLocation(), GetCapsuleComponent()->GetScaledCapsuleHalfHeight(), GetCapsuleComponent()->GetScaledCapsuleRadius(), GetCapsuleComponent()->GetComponentQuat(), FColor::Blue);
 }
@@ -64,7 +88,7 @@ void AMyCharacter::SmartJump()
     if (!FillTarget.IsZero())
     {
         FVector actorLoc = GetActorLocation();
-        float bonusHeight = 800.f/* + FVector::Dist2D(point, actorLoc) / 3.f*/;
+        float bonusHeight = 800.f;
         float landSpeed = 980.f;
         float time = 1.f;
         float startSpeedZ = 0.f;
@@ -97,9 +121,30 @@ void AMyCharacter::SmartJump()
 
         FillTarget.X = (FillTarget.X - actorLoc.X) / time;
         FillTarget.Y = (FillTarget.Y - actorLoc.Y) / time;
-        //GetCharacterMovement()->Velocity = FVector(0, 0, 1000);
         GetCharacterMovement()->Velocity = FVector(FillTarget.X, FillTarget.Y, startSpeedZ);
     }
+}
+
+void AMyCharacter::SetDamage(float damage)
+{
+    if (bHealthDriver.CurHealth && bHealthDriver.CurHealth == bHealthDriver.CurHealthDropEffect && !bHealthDriver.Timer)
+        bHealthDriver.Timer = HealthDropEffectTimer;
+
+    bHealthDriver.CurHealth -= damage;
+
+    if (bHealthDriver.CurHealth < 0.f)
+        bHealthDriver.CurHealth = 0.f;
+}
+
+void AMyCharacter::HandleDamage()
+{
+    SetDamage();
+}
+
+void AMyCharacter::RestoreHealth()
+{
+    bHealthDriver.CurHealth = 1.f;
+    bHealthDriver.CurHealthDropEffect = 1.f;
 }
 
 // Called to bind functionality to input
@@ -117,6 +162,8 @@ void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
     PlayerInputComponent->BindAction("Jump", IE_Released, this, &AMyCharacter::StopJumping);
 
     PlayerInputComponent->BindAction("SmartJump", IE_Pressed, this, &AMyCharacter::SmartJump);
+    PlayerInputComponent->BindAction("HandleDamage", IE_Pressed, this, &AMyCharacter::HandleDamage);
+        PlayerInputComponent->BindAction("RestoreHealth", IE_Pressed, this, &AMyCharacter::RestoreHealth);
 }
 
 void AMyCharacter::MoveForward(float Value)
@@ -133,4 +180,11 @@ void AMyCharacter::MoveRight(float Value)
     {
         AddMovementInput(GetActorRightVector(), Value);
     }
+}
+
+FHealthDriver::FHealthDriver()
+{
+    CurHealth = 1.f;
+    CurHealthDropEffect = 1.f;
+    Timer = 0.f;
 }

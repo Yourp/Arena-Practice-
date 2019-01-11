@@ -15,6 +15,22 @@
 #include "Components/CapsuleComponent.h"
 #include "MyCharacter.generated.h"
 
+#define HealthDropEffectTimer 0.5f
+#define JumpHight 1100.f
+#define FallSpeed 3300.f
+
+USTRUCT()
+struct FHealthDriver
+{
+    GENERATED_BODY()
+
+    FHealthDriver();
+
+    float CurHealth;
+    float CurHealthDropEffect;
+    float Timer;
+};
+
 UCLASS()
 class FIRST_API AMyCharacter : public ACharacter
 {
@@ -43,10 +59,27 @@ public:
     void MoveForward(float Value);
     void MoveRight(float Value);
     void SmartJump();
+    void SetDamage(float damage = 0.1f);
+    void HandleDamage();
+    void RestoreHealth();
 
-    UPROPERTY(EditAnywhere, Category = "Curves")
-    UCurveFloat* fCurveXY;
+    UFUNCTION(BlueprintPure)
+    float GetHealth();
 
-    UPROPERTY(EditAnywhere, Category = "Curves")
-    UCurveFloat* fCurveZ;
+    UFUNCTION(BlueprintPure)
+    float GetHealthDropEffect();
+
+private:
+
+    FHealthDriver bHealthDriver;
 };
+
+FORCEINLINE float AMyCharacter::GetHealth()
+{
+    return bHealthDriver.CurHealth;
+}
+
+FORCEINLINE float AMyCharacter::GetHealthDropEffect()
+{
+    return bHealthDriver.CurHealthDropEffect;
+}
