@@ -188,3 +188,13 @@ FHealthDriver::FHealthDriver()
     CurHealthDropEffect = 1.f;
     Timer = 0.f;
 }
+
+float AMyCharacter::GetHealth()
+{
+    return bHealthDriver.CurHealth;
+}
+
+float AMyCharacter::GetHealthDropEffect()
+{
+    return bHealthDriver.CurHealthDropEffect;
+}

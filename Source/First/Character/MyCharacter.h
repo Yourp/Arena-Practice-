@@ -8,7 +8,6 @@
 #include "Camera/CameraComponent.h"
 #include "GameFramework/Pawn.h"
 #include "Components/InputComponent.h"
-#include "Curves/CurveFloat.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "DrawDebugHelpers.h"
@@ -17,7 +16,7 @@
 
 #define HealthDropEffectTimer 0.5f
 #define JumpHight 1100.f
-#define FallSpeed 3300.f
+#define FallSpeed 2900.f
 
 USTRUCT()
 struct FHealthDriver
@@ -73,13 +72,3 @@ private:
 
     FHealthDriver bHealthDriver;
 };
-
-FORCEINLINE float AMyCharacter::GetHealth()
-{
-    return bHealthDriver.CurHealth;
-}
-
-FORCEINLINE float AMyCharacter::GetHealthDropEffect()
-{
-    return bHealthDriver.CurHealthDropEffect;
-}
