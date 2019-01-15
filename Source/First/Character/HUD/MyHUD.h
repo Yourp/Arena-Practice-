@@ -4,17 +4,38 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/HUD.h"
+#include "Character/MyCharacter.h"
 #include "MyHUD.generated.h"
 
+class AMyCharacter;
 /**
  * 
  */
+
+#define HealthStartPosX         50.f
+#define HealthStartPosY         50.f
+#define HealthLength            300.f
+#define HealthWidth             20.f
+#define HealthBorderSize        3.f
+
+#define HealthBorderStartPosX   (HealthStartPosX - HealthBorderSize)
+#define HealthBorderStartPosY   (HealthStartPosY - HealthBorderSize)
+#define HealthBorderWidth       (HealthWidth + HealthBorderSize * 2.f)
+#define HealthBorderLength      (HealthLength + HealthBorderSize * 2.f)
+
 UCLASS()
 class FIRST_API AMyHUD : public AHUD
 {
     GENERATED_BODY()
 
-   void DrawHUD() override;
+public:
+
+    AMyHUD();
+
+    void BeginPlay() override;
+    void DrawHUD() override;
 	
-	
+private:
+
+    AMyCharacter* Char;
 };

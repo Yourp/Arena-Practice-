@@ -14,9 +14,9 @@
 #include "Components/CapsuleComponent.h"
 #include "MyCharacter.generated.h"
 
-#define HealthDropEffectTimer 0.5f
 #define JumpHight 1100.f
 #define FallSpeed 2900.f
+#define HealthDropEffectTimer   0.5f
 
 USTRUCT()
 struct FHealthDriver
@@ -61,12 +61,8 @@ public:
     void SetDamage(float damage = 0.1f);
     void HandleDamage();
     void RestoreHealth();
-
-    UFUNCTION(BlueprintPure)
-    float GetHealth();
-
-    UFUNCTION(BlueprintPure)
-    float GetHealthDropEffect();
+    float GetHealth() const;
+    float GetHealthDropEffect() const;
 
 private:
 

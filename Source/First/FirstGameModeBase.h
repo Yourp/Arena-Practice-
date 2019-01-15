@@ -14,13 +14,4 @@ class FIRST_API AFirstGameModeBase : public AGameModeBase
 {
     GENERATED_BODY()
 
-    void BeginPlay() override;
-
-protected:
-
-    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Health Bar", Meta = (BlueprintProtected = "true"))
-    TSubclassOf<UUserWidget> PlayerHUDClass;
-	
-    UPROPERTY()
-    UUserWidget* CurrentWidget;
 };

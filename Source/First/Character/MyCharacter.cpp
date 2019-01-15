@@ -56,7 +56,6 @@ void AMyCharacter::Tick(float DeltaTime)
         if (bHealthDriver.Timer < 0.f)
             bHealthDriver.Timer = 0.f;
     }
-
     //DrawDebugCapsule(GetWorld(), GetActorLocation(), GetCapsuleComponent()->GetScaledCapsuleHalfHeight(), GetCapsuleComponent()->GetScaledCapsuleRadius(), GetCapsuleComponent()->GetComponentQuat(), FColor::Blue);
 }
 
@@ -144,7 +143,7 @@ void AMyCharacter::HandleDamage()
 void AMyCharacter::RestoreHealth()
 {
     bHealthDriver.CurHealth = 1.f;
-    bHealthDriver.CurHealthDropEffect = 1.f;
+    bHealthDriver.CurHealthDropEffect = bHealthDriver.CurHealth;
 }
 
 // Called to bind functionality to input
@@ -182,19 +181,19 @@ void AMyCharacter::MoveRight(float Value)
     }
 }
 
+float AMyCharacter::GetHealth() const
+{
+    return bHealthDriver.CurHealth;
+}
+
+float AMyCharacter::GetHealthDropEffect() const
+{
+    return bHealthDriver.CurHealthDropEffect;
+}
+
 FHealthDriver::FHealthDriver()
 {
     CurHealth = 1.f;
     CurHealthDropEffect = 1.f;
     Timer = 0.f;
-}
-
-float AMyCharacter::GetHealth()
-{
-    return bHealthDriver.CurHealth;
-}
-
-float AMyCharacter::GetHealthDropEffect()
-{
-    return bHealthDriver.CurHealthDropEffect;
 }
