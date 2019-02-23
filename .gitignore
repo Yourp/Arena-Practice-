@@ -16,6 +16,8 @@ enc_temp_folder/
 
 Saved/
 
+.vs/
+
 DerivedDataCache/
 
 Выполните git init
