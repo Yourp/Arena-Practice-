@@ -28,6 +28,4 @@ void AFirstAIController::Tick(float DeltaTime)
     Super::Tick(DeltaTime);
 
     EPathFollowingStatus::Type ad = GetMoveStatus();
-
-    bool asd = false;
 }

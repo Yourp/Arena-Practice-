@@ -8,14 +8,14 @@ APlanet::APlanet()
 //     SetRootComponent(MeshComp);
 //     StaticMeshComponent = MeshComp;
 
-    SphereComp = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComponent"));
-    SphereComp->SetCollisionProfileName("Trigger");
-    SphereComp->SetupAttachment(RootComponent);
-    //SphereComp->bGenerateOverlapEvents = false;
-    SphereComp->OnComponentBeginOverlap.AddDynamic(this, &APlanet::OnOverlap);
-    SphereComp->OnComponentEndOverlap.AddDynamic(this, &APlanet::OnEndOverlap);
+//     SphereComp = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComponent"));
+//     SphereComp->SetCollisionProfileName("Trigger");
+//     SphereComp->SetupAttachment(RootComponent);
+//     //SphereComp->bGenerateOverlapEvents = false;
+//     SphereComp->OnComponentBeginOverlap.AddDynamic(this, &APlanet::OnOverlap);
+//     SphereComp->OnComponentEndOverlap.AddDynamic(this, &APlanet::OnEndOverlap);
     
-    PrimaryActorTick.bCanEverTick = true;
+    PrimaryActorTick.bCanEverTick = false;
 }
 
 void APlanet::Tick(float DeltaSeconds)

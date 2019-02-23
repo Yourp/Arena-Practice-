@@ -14,4 +14,13 @@ class FIRST_API AFirstGameModeBase : public AGameModeBase
 {
     GENERATED_BODY()
 
+    AFirstGameModeBase();
+
+public:
+
+    void SetStartLocation(FVector Pos, FRotator Rot);
+
+private:
+    FVector Position;
+    FRotator Rotation;
 };

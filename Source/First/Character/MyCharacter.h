@@ -55,16 +55,22 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+    float GetHealth() const;
+    float GetHealthDropEffect() const;
+
+    void SetCanSmartJump(bool val);
+    void SetPhase(uint8 val);
+    uint8 GetPhase() const;
+
+private:
     void MoveForward(float Value);
     void MoveRight(float Value);
     void SmartJump();
     void SetDamage(float damage = 0.1f);
     void HandleDamage();
     void RestoreHealth();
-    float GetHealth() const;
-    float GetHealthDropEffect() const;
-
-private:
 
     FHealthDriver bHealthDriver;
+    bool bCanSmartJump;
+    uint8 Phase;
 };

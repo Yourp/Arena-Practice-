@@ -13,6 +13,8 @@ AMyCharacter::AMyCharacter()
     CharCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
     CharCamera->SetupAttachment(RootComponent);
     CharCamera->bUsePawnControlRotation = true;
+    bCanSmartJump = true;
+    Phase = 0;
 }
 
 // Called when the game starts or when spawned
@@ -61,12 +63,13 @@ void AMyCharacter::Tick(float DeltaTime)
 
 void AMyCharacter::SmartJump()
 {
-    GetCharacterMovement()->SetMovementMode(MOVE_Falling);
+    if (!bCanSmartJump)
+        return;
 
     TArray<AActor*> targets;
     UGameplayStatics::GetAllActorsWithTag(this, FName("111"), targets);
 
-    FVector FillTarget;
+    FVector FillTarget = FVector::ZeroVector;
     float MaxFill = -2.f;
     FVector Dir = CharCamera->GetForwardVector();
 
@@ -86,6 +89,7 @@ void AMyCharacter::SmartJump()
 
     if (!FillTarget.IsZero())
     {
+        GetCharacterMovement()->SetMovementMode(MOVE_Falling);
         FVector actorLoc = GetActorLocation();
         float bonusHeight = 800.f;
         float landSpeed = 980.f;
@@ -189,6 +193,21 @@ float AMyCharacter::GetHealth() const
 float AMyCharacter::GetHealthDropEffect() const
 {
     return bHealthDriver.CurHealthDropEffect;
+}
+
+void AMyCharacter::SetCanSmartJump(bool val)
+{
+    bCanSmartJump = val;
+}
+
+void AMyCharacter::SetPhase(uint8 val)
+{
+    Phase = val;
+}
+
+uint8 AMyCharacter::GetPhase() const
+{
+    return Phase;
 }
 
 FHealthDriver::FHealthDriver()
