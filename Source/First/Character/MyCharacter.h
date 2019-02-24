@@ -61,6 +61,8 @@ public:
     void SetCanSmartJump(bool val);
     void SetPhase(uint8 val);
     uint8 GetPhase() const;
+    uint8 GetLastPhaseCuratorIndex() const;
+    void SetLastPhaseCuratorIndex(uint8 val);
 
 private:
     void MoveForward(float Value);
@@ -73,4 +75,5 @@ private:
     FHealthDriver bHealthDriver;
     bool bCanSmartJump;
     uint8 Phase;
+    uint8 LastPhaseCuratorIndex;
 };

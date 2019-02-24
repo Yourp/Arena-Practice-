@@ -28,7 +28,6 @@ void ATeleportBox::OnOverlap(UPrimitiveComponent * OverlappingComp, AActor * Oth
             {
                 Char->SetCanSmartJump(false);
                 TArray<AActor*> targets;
-                FName tagName;
 
                 UGameplayStatics::GetAllActorsWithTag(this, "p1", targets);
 
@@ -38,6 +37,14 @@ void ATeleportBox::OnOverlap(UPrimitiveComponent * OverlappingComp, AActor * Oth
                     itr->SetActorEnableCollision(false);
                 }
 
+                UGameplayStatics::GetAllActorsWithTag(this, "p3", targets);
+
+                for (auto itr : targets)
+                {
+                    itr->GetRootComponent()->SetVisibility(true, true);
+                    itr->SetActorEnableCollision(true);
+                }
+
                 Char->SetPhase(1);
                 break;
             }
@@ -45,7 +52,6 @@ void ATeleportBox::OnOverlap(UPrimitiveComponent * OverlappingComp, AActor * Oth
             {
                 Char->SetCanSmartJump(true);
                 TArray<AActor*> targets;
-                FName tagName;
 
                 UGameplayStatics::GetAllActorsWithTag(this, "p1", targets);
 
@@ -53,6 +59,14 @@ void ATeleportBox::OnOverlap(UPrimitiveComponent * OverlappingComp, AActor * Oth
                 {
                     itr->GetRootComponent()->SetVisibility(true, true);
                     itr->SetActorEnableCollision(true);
+                }
+
+                UGameplayStatics::GetAllActorsWithTag(this, "p3", targets);
+
+                for (auto itr : targets)
+                {
+                    itr->GetRootComponent()->SetVisibility(false, true);
+                    itr->SetActorEnableCollision(false);
                 }
 
                 Char->SetPhase(0);

@@ -23,5 +23,8 @@ public:
 
 
     UBoxComponent* TriggerBox;
+
+    UPROPERTY(EditAnywhere, Category = "Index")
+    uint8 index;
 	
 };

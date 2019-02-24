@@ -3,6 +3,7 @@
 #include "MyCharacter.h"
 #include "GameFramework/PawnMovementComponent.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 AMyCharacter::AMyCharacter()
@@ -22,6 +23,30 @@ void AMyCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
+    TArray<AActor*> targets;
+    UGameplayStatics::GetAllActorsWithTag(this, "p0", targets);
+
+    for (auto itr : targets)
+    {
+        itr->GetRootComponent()->SetVisibility(false, true);
+        itr->SetActorEnableCollision(false);
+    }
+
+    UGameplayStatics::GetAllActorsWithTag(this, "p2", targets);
+
+    for (auto itr : targets)
+    {
+        itr->GetRootComponent()->SetVisibility(false, true);
+        itr->SetActorEnableCollision(false);
+    }
+
+    UGameplayStatics::GetAllActorsWithTag(this, "p3", targets);
+
+    for (auto itr : targets)
+    {
+        itr->GetRootComponent()->SetVisibility(false, true);
+        itr->SetActorEnableCollision(false);
+    }
 }
 
 void AMyCharacter::Landed(const FHitResult & Hit)
@@ -208,6 +233,16 @@ void AMyCharacter::SetPhase(uint8 val)
 uint8 AMyCharacter::GetPhase() const
 {
     return Phase;
+}
+
+uint8 AMyCharacter::GetLastPhaseCuratorIndex() const
+{
+    return LastPhaseCuratorIndex;
+}
+
+void AMyCharacter::SetLastPhaseCuratorIndex(uint8 val)
+{
+    LastPhaseCuratorIndex = val;
 }
 
 FHealthDriver::FHealthDriver()
