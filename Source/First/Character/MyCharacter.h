@@ -64,6 +64,9 @@ public:
     uint8 GetLastPhaseCuratorIndex() const;
     void SetLastPhaseCuratorIndex(uint8 val);
 
+    void TeleportToSavePosition();
+    void SetSavePosition(FVector Pos);
+
 private:
     void MoveForward(float Value);
     void MoveRight(float Value);
@@ -76,4 +79,5 @@ private:
     bool bCanSmartJump;
     uint8 Phase;
     uint8 LastPhaseCuratorIndex;
+    FVector SavePosition;
 };

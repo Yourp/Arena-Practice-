@@ -245,6 +245,17 @@ void AMyCharacter::SetLastPhaseCuratorIndex(uint8 val)
     LastPhaseCuratorIndex = val;
 }
 
+void AMyCharacter::TeleportToSavePosition()
+{
+    if (!SavePosition.IsZero())
+        SetActorLocation(SavePosition);
+}
+
+void AMyCharacter::SetSavePosition(FVector Pos)
+{
+    SavePosition = Pos;
+}
+
 FHealthDriver::FHealthDriver()
 {
     CurHealth = 1.f;
