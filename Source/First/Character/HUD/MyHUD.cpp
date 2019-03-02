@@ -3,6 +3,8 @@
 #include "MyHUD.h"
 #include "CanvasItem.h"
 #include "Engine/Canvas.h"
+#include "GameFramework/GameUserSettings.h"
+#include "Slate/SceneViewport.h"
 #include "CanvasTypes.h"
 
 AMyHUD::AMyHUD()
@@ -15,6 +17,19 @@ void AMyHUD::BeginPlay()
     if (PlayerOwner != nullptr)
     {
         Char = Cast<AMyCharacter>(PlayerOwner->AcknowledgedPawn);
+
+        ULocalPlayer* LocPlayer = Cast<ULocalPlayer>(PlayerOwner->Player);
+        if (LocPlayer && LocPlayer->ViewportClient)
+        {
+            if (FSceneViewport* s_viewport = LocPlayer->ViewportClient->GetGameViewport())
+            {
+                if (UGameUserSettings* settings = GEngine->GetGameUserSettings())
+                {
+                    FIntPoint resol = settings->GetScreenResolution();
+                    s_viewport->SetFixedViewportSize(resol.X, resol.Y);
+                }
+            }
+        }
     }
 }
 
@@ -54,8 +69,9 @@ void AMyHUD::DrawHUD()
         Canvas->DrawItem(TileItem);
     }
 
-     DrawMaterialSimple(Materials[0], 50, 800, 500, 500, 0.2f);
-
+     DrawMaterialSimple(Materials[0], 50, 950, 500, 500, 0.2f);
+     DrawMaterialSimple(Materials[0], 150, 950, 500, 500, 0.2f);
+     DrawMaterialSimple(Materials[0], 250, 950, 500, 500, 0.2f);
 //     
 //     DrawRect(FLinearColor(0.f, 0.f, 0.f, 0.4f), 47.f, 47.f, 306.f, 26.f);
 //     DrawRect(FLinearColor(0.5f, 0.f, 0.f, 1.f), 50.f, 50.f, 250.f, 20);
