@@ -23,4 +23,6 @@ public:
 private:
     UBoxComponent* TriggerBox;
 
+    UPROPERTY(EditAnywhere)
+    FVector SavePoint;
 };

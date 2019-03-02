@@ -54,6 +54,8 @@ void AMyHUD::DrawHUD()
         Canvas->DrawItem(TileItem);
     }
 
+     DrawMaterialSimple(Materials[0], 50, 800, 500, 500, 0.2f);
+
 //     
 //     DrawRect(FLinearColor(0.f, 0.f, 0.f, 0.4f), 47.f, 47.f, 306.f, 26.f);
 //     DrawRect(FLinearColor(0.5f, 0.f, 0.f, 1.f), 50.f, 50.f, 250.f, 20);

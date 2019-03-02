@@ -34,8 +34,13 @@ public:
 
     void BeginPlay() override;
     void DrawHUD() override;
+
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    TArray<UMaterialInterface*> Materials;
 	
 private:
 
     AMyCharacter* Char;
+
 };
