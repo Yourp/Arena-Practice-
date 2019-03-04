@@ -15,6 +15,7 @@ AMyCharacter::AMyCharacter()
     CharCamera->SetupAttachment(RootComponent);
     CharCamera->bUsePawnControlRotation = true;
     bCanSmartJump = true;
+    isQuestActive = false;
     Phase = 0;
 }
 
@@ -198,7 +199,7 @@ void AMyCharacter::MoveForward(float Value)
 {
     if (Value != 0.f)
     {
-        AddMovementInput(GetActorForwardVector(), Value);
+        AddMovementInput(GetActorForwardVector(), Value, true);
     }
 }
 
@@ -206,7 +207,7 @@ void AMyCharacter::MoveRight(float Value)
 {
     if (Value != 0.f)
     {
-        AddMovementInput(GetActorRightVector(), Value);
+        AddMovementInput(GetActorRightVector(), Value, true);
     }
 }
 
@@ -243,6 +244,54 @@ uint8 AMyCharacter::GetLastPhaseCuratorIndex() const
 void AMyCharacter::SetLastPhaseCuratorIndex(uint8 val)
 {
     LastPhaseCuratorIndex = val;
+}
+
+void AMyCharacter::SetMyHUD(AMyHUD * HUD)
+{
+    MyHUD = HUD;
+}
+
+void AMyCharacter::DoPickupItem(uint8 itemID)
+{
+    getItems |= (1 << (itemID + 1));
+
+    if (MyHUD != nullptr)
+    {
+        MyHUD->ActivateItemInHUD(itemID);
+    }
+}
+
+void AMyCharacter::HandleQuestComplete()
+{
+    if (getItems == ((1 << 1) + (1 << 2) + (1 << 3) + (1 << 4) + (1 << 5) + (1 << 6)))
+    {
+        TArray<AActor*> targets;
+        UGameplayStatics::GetAllActorsWithTag(this, "Arrow", targets);
+
+        for (auto itr : targets)
+        {
+            itr->GetRootComponent()->SetVisibility(true, true);
+        }
+
+        UGameplayStatics::GetAllActorsWithTag(this, "QuestDoor", targets);
+
+        for (auto itr : targets)
+        {
+            itr->GetRootComponent()->SetVisibility(false, true);
+            itr->SetActorEnableCollision(false);
+        }
+    }
+    
+}
+
+bool AMyCharacter::IsQuestActive() const
+{
+    return isQuestActive;
+}
+
+void AMyCharacter::SetQuestActive(bool enable)
+{
+    isQuestActive = enable;
 }
 
 void AMyCharacter::TeleportToSavePosition()

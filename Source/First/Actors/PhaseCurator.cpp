@@ -22,7 +22,6 @@ void APhaseCurator::OnOverlap(UPrimitiveComponent * OverlappingComp, AActor * Ot
         if (Char->GetLastPhaseCuratorIndex() == index)
             return;
 
-
         switch (index)
         {
             case 0:
@@ -44,6 +43,8 @@ void APhaseCurator::OnOverlap(UPrimitiveComponent * OverlappingComp, AActor * Ot
                     itr->GetRootComponent()->SetVisibility(false, true);
                     itr->SetActorEnableCollision(false);
                 }
+
+                Char->SetQuestActive(false);
                 break;
             }
             case 1:
@@ -65,6 +66,8 @@ void APhaseCurator::OnOverlap(UPrimitiveComponent * OverlappingComp, AActor * Ot
                     itr->GetRootComponent()->SetVisibility(false, true);
                     itr->SetActorEnableCollision(false);
                 }
+
+                Char->SetQuestActive(true);
                 break;
             }
             default:

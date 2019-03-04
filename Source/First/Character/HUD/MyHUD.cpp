@@ -5,11 +5,16 @@
 #include "Engine/Canvas.h"
 #include "GameFramework/GameUserSettings.h"
 #include "Slate/SceneViewport.h"
+#include "Materials/Material.h"
+#include "Kismet/KismetMaterialLibrary.h"
+#include "Materials/MaterialInstanceDynamic.h"
 #include "CanvasTypes.h"
 
 AMyHUD::AMyHUD()
 {
     PrimaryActorTick.bCanEverTick = true;
+
+
 }
 
 void AMyHUD::BeginPlay()
@@ -18,15 +23,23 @@ void AMyHUD::BeginPlay()
     {
         Char = Cast<AMyCharacter>(PlayerOwner->AcknowledgedPawn);
 
-        ULocalPlayer* LocPlayer = Cast<ULocalPlayer>(PlayerOwner->Player);
-        if (LocPlayer && LocPlayer->ViewportClient)
+        if (Char != nullptr)
         {
-            if (FSceneViewport* s_viewport = LocPlayer->ViewportClient->GetGameViewport())
+            Char->SetMyHUD(this);
+
+            ULocalPlayer* LocPlayer = Cast<ULocalPlayer>(PlayerOwner->Player);
+            if (LocPlayer && LocPlayer->ViewportClient)
             {
-                if (UGameUserSettings* settings = GEngine->GetGameUserSettings())
+                if (FSceneViewport* s_viewport = LocPlayer->ViewportClient->GetGameViewport())
                 {
-                    FIntPoint resol = settings->GetScreenResolution();
-                    s_viewport->SetFixedViewportSize(resol.X, resol.Y);
+                    if (UGameUserSettings* settings = GEngine->GetGameUserSettings())
+                    {
+                        FIntPoint resol = settings->GetScreenResolution();
+                        s_viewport->SetFixedViewportSize(resol.X, resol.Y);
+
+                        for (auto itr : Materials)
+                            MaterialsInstanceDynamic.Add(UMaterialInstanceDynamic::Create(itr, this));
+                    }
                 }
             }
         }
@@ -67,13 +80,26 @@ void AMyHUD::DrawHUD()
         TileItem.Size.X = health * HealthLength;
         TileItem.SetColor(FLinearColor(0.f, 0.4f, 0.f, 1.f));
         Canvas->DrawItem(TileItem);
-    }
 
-     DrawMaterialSimple(Materials[0], 50, 950, 500, 500, 0.2f);
-     DrawMaterialSimple(Materials[0], 150, 950, 500, 500, 0.2f);
-     DrawMaterialSimple(Materials[0], 250, 950, 500, 500, 0.2f);
+        if (Char->IsQuestActive())
+        {
+            float ScreenX = 50.f;
+
+            for (size_t i = 0; i < (FMath::Min(MaterialsInstanceDynamic.Num(), 6)); i++)
+            {
+                DrawMaterialSimple(MaterialsInstanceDynamic[i], ScreenX, 950, 500, 500, 0.2f);
+                ScreenX += 100.f;
+            }
+        }
+    }
 //     
 //     DrawRect(FLinearColor(0.f, 0.f, 0.f, 0.4f), 47.f, 47.f, 306.f, 26.f);
 //     DrawRect(FLinearColor(0.5f, 0.f, 0.f, 1.f), 50.f, 50.f, 250.f, 20);
 //     DrawRect(FLinearColor(0.f, 0.4f, 0.f, 1.f), 50.f, 50.f, 200.f, 20);
+}
+
+void AMyHUD::ActivateItemInHUD(uint8 itemID)
+{
+    if (MaterialsInstanceDynamic.IsValidIndex(itemID))
+        MaterialsInstanceDynamic[itemID]->SetScalarParameterValue("Active", 2.f);
 }

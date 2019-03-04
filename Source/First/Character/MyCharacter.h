@@ -12,7 +12,10 @@
 #include "Kismet/GameplayStatics.h"
 #include "DrawDebugHelpers.h"
 #include "Components/CapsuleComponent.h"
+#include "Character/HUD/MyHUD.h"
 #include "MyCharacter.generated.h"
+
+class AMyHUD;
 
 #define JumpHight 1100.f
 #define FallSpeed 2900.f
@@ -64,6 +67,14 @@ public:
     uint8 GetLastPhaseCuratorIndex() const;
     void SetLastPhaseCuratorIndex(uint8 val);
 
+    void SetMyHUD(AMyHUD* HUD);
+
+    void DoPickupItem(uint8 itemID);
+
+    void HandleQuestComplete();
+    bool IsQuestActive() const;
+    void SetQuestActive(bool enable);
+
     void TeleportToSavePosition();
     void SetSavePosition(FVector Pos);
 
@@ -80,4 +91,13 @@ private:
     uint8 Phase;
     uint8 LastPhaseCuratorIndex;
     FVector SavePosition;
+
+    UPROPERTY()
+    AMyHUD* MyHUD;
+
+    UPROPERTY()
+    uint32 getItems;
+
+    UPROPERTY()
+    bool isQuestActive;
 };

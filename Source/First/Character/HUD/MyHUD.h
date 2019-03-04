@@ -35,12 +35,17 @@ public:
     void BeginPlay() override;
     void DrawHUD() override;
 
+    void ActivateItemInHUD(uint8 itemID);
+
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     TArray<UMaterialInterface*> Materials;
-	
+
 private:
 
+    UPROPERTY()
     AMyCharacter* Char;
 
+    UPROPERTY()
+    TArray<UMaterialInstanceDynamic*> MaterialsInstanceDynamic;
 };
