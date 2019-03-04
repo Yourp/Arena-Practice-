@@ -280,6 +280,8 @@ void AMyCharacter::HandleQuestComplete()
             itr->GetRootComponent()->SetVisibility(false, true);
             itr->SetActorEnableCollision(false);
         }
+
+        isQuestActive = false;
     }
     
 }
